@@ -28,3 +28,19 @@ export async function postBookings(req: AuthenticatedRequest, res: Response) {
     }
   }
 }
+
+export async function changeBookings(req: AuthenticatedRequest, res: Response) {
+  const { userId } = req;
+  const { roomId } = req.body;
+  try {
+    const change = await bookingService.changeBooking(userId, roomId);
+    return res.status(httpStatus.OK).send(change);
+  } catch (error) {
+    if (error.name === 'NotFoundError') {
+      return res.sendStatus(httpStatus.NOT_FOUND);
+    }
+    if (error.name === 'ForbiddenError') {
+      return res.sendStatus(httpStatus.FORBIDDEN);
+    }
+  }
+}
